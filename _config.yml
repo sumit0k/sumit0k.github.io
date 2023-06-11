@@ -1,1 +1,10 @@
-theme: jekyll-theme-dinky
+google_analytics:
+theme: jekyll-theme-hacker
+title: Sumit Kumar
+description: Engineering teams leader, built systems handling TBs of distributed data, 20x faster ticket resolution, 75% cost savings, 6x faster queries
+links:
+  resume: ./SumitKumar.pdf
+  linkedin: sumit0k
+  github: sumit0k
+  stackoverflow: 4453633/sumit
+  twitter: sumit0k
