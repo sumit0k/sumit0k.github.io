@@ -12,6 +12,7 @@
 
 # TECHNICAL SKILLS
 ---
+
 |              |           |
 |-------------|------------------|
 | **DATA STORES**           | Amazon Redshift, MongoDB, Elasticsearch, Redis, Cassandra, MySQL, PostgreSQL, Aerospike |
