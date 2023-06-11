@@ -7,4 +7,16 @@ links:
   linkedin: sumit0k
   github: sumit0k
   stackoverflow: 4453633/sumit
-  twitter: sumit0k
+twitter:
+  username: sumit0k
+  card: summary
+logo: ./favicon.ico
+social:
+  name: Sumit Kumar
+  links:
+    - https://twitter.com/sumit0k
+    - https://www.facebook.com/sumit0kk
+    - https://www.instagram.com/sumit0kk
+    - https://www.linkedin.com/in/sumit0k
+    - https://github.com/sumit0k
+    - https://keybase.io/sumitkumar1209
