@@ -8,13 +8,12 @@
 - Built "Data transformation platform" from scratch and led a team to build "Data integration platform" in the current organisation with the aim of data democratisation. These platforms handled most of the use-cases present with data and pushed the company to be more data centric.
 - Built distributed, resilient and scalable the systems to handle millions of data points in first organisation and then upto 10s billions of data points per month in the current one.
 
-## Contact: sumit0krk@gmail.com
+## Contact: [sumit0krk@gmail.com](mailto:sumit0krk@gmail.com)
 
 # TECHNICAL SKILLS
----
 
 |              |           |
-|:-------------|:------------------|
+|-------------|------------------|
 | **DATA STORES**           | Amazon Redshift, MongoDB, Elasticsearch, Redis, Cassandra, MySQL, PostgreSQL, Aerospike |
 | **LANGUAGES/LIB.** | Python, Javascript, SQL, Node.JS, Express.JS, React JS, Angular JS, Shell Script, Java |
 | **TECHNOLOGIES**           | Kibana, Logstash, WebSockets, NGINX, Git, Markdown|
@@ -90,7 +89,7 @@
     - Can manage complex Server management with a fluid web interface
 
 # Articles
-
+---
  - **[Why we chose Apache Spark for ETL (Extract-Transform-Load)](https://medium.com/real-spark/why-we-chose-apache-spark-for-etl-extract-transform-load-b7a3cb01b459)**
 - **[Optimising ElasticSearch and save storage cost by 60x — Know Your Data (KYD)](https://medium.com/real-spark/optimising-highly-indexed-document-storage-know-your-data-kyd-c5c11deaa736)**
 - **[Optimising MongoDB and save storage cost by 7x — Know Your Data (KYD)](https://medium.com/real-spark/optimising-document-based-storage-know-your-data-kyd-214e884af5b9)**
