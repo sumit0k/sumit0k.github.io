@@ -1,5 +1,5 @@
 # Sumit's Resume
-
+---
 > I can help you either set up a data culture from scratch or grow it exponentially from the current state. I have worked on the scale of millions in the first organisation and billions in the second one, hoping to scale myself and the systems to handle trillions of data points.
 
 ### What makes me qualified:
@@ -11,7 +11,7 @@
 ## Contact: [sumit0krk@gmail.com](mailto:sumit0krk@gmail.com)
 
 # TECHNICAL SKILLS
-
+---
 |              |           |
 |-------------|------------------|
 | **DATA STORES**           | Amazon Redshift, MongoDB, Elasticsearch, Redis, Cassandra, MySQL, PostgreSQL, Aerospike |
