@@ -30,6 +30,7 @@
 ### SENIOR ENGINEERING MANAGER _`May 2022 - Present (1+ Year)`_
 - Enhanced customer delight culture by introducing a systematic customer support process that helped Customer success team achieve
     better SLOs, **reduced ticket resolution time by 20x** , and increased team accountability
+- Introduced a new system for launching environments and removed manual processes resulting in ••single week delivery from multi quarters**
 - **Accelerated release cycles by 6x** by introducing Hubs, Spokes & Pods model to handle visionary and missionary goals in parent team
 - Led the effort to migrate infrastructure to new efficient system resulting in around **75% cost savings** and increased reliability
 
