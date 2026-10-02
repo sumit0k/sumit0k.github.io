@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Home loan calculators</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF2F5; --panel:#FFFFFF; --ink:#18232E; --muted:#5B6773; --line:#D5DDE4;
+  --blue:#2F5D8A; --green:#23795A; --plum:#8A3B5C; --amber:#A8741A; --field:#F7F9FB;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121A22; --panel:#1A242E; --ink:#E6ECF1; --muted:#97A3AF; --line:#2C3946;
+    --blue:#7FAEDB; --green:#5FC39A; --plum:#D982A6; --amber:#E0AE55; --field:#141D26;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121A22; --panel:#1A242E; --ink:#E6ECF1; --muted:#97A3AF; --line:#2C3946;
+  --blue:#7FAEDB; --green:#5FC39A; --plum:#D982A6; --amber:#E0AE55; --field:#141D26;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:clamp(26px,3.4vw,38px);line-height:1.1;margin:0 0 8px;font-weight:700;letter-spacing:-.02em}
+.lede{color:var(--muted);max-width:68ch;margin:0 0 28px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:4px 0 18px}
+.tabs button{font:inherit;font-weight:500;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:10px 14px;margin-bottom:-1px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--blue)}
+.tabs button:hover{color:var(--ink)}
+.grid{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:1fr}}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+
+fieldset{border:0;margin:0 0 18px;padding:0}
+legend{font-weight:600;font-size:16px;margin-bottom:10px;padding:0}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:end}
+.row.c21{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.row.c12{grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
+.row.c11w{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+.row.nw{grid-template-columns:repeat(2,minmax(0,150px));justify-content:start}
+.narrow{max-width:150px}
+.inp{min-height:40px}
+select{height:40px}
+.row3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:end}
+.row>*,.row3>*{min-width:0}
+.row label,.row3 label{white-space:normal;line-height:1.3}
+.row3 .inp{padding:0 6px}
+.inp span{flex:none}
+aside,aside fieldset{min-width:0}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.inp{display:flex;align-items:center;background:var(--field);border:1px solid var(--line);border-radius:6px;padding:0 10px}
+.inp span{color:var(--muted);font-size:13px}
+.inp input{flex:1;min-width:0;width:100%;border:0;background:transparent;color:var(--ink);font:inherit;padding:8px 6px;outline:none}
+.inp:focus-within{border-color:var(--blue);box-shadow:0 0 0 2px color-mix(in srgb,var(--blue) 25%,transparent)}
+.hint{font-size:12px;color:var(--muted);margin-top:3px;min-height:1em}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink);margin-top:12px}
+.check input{margin-top:3px;accent-color:var(--blue)}
+.weeks{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.weeks .inp{padding:0 6px}
+.weeks .inp input{padding:7px 2px;text-align:right}
+.weeks small{display:block;font-size:11px;color:var(--muted);text-align:center;margin-bottom:3px}
+.wkgrid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.wk{padding:8px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.wk:nth-child(2n){border-right:0}
+.wk:nth-last-child(1){border-bottom:0}
+.wk label{margin:0 0 4px;font-size:12px}
+.wk select{width:100%}
+select{min-height:38px;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.total{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid var(--line);margin-top:10px;padding-top:8px;font-size:14px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.presets button{font:inherit;font-size:12px;background:transparent;color:var(--blue);border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer}
+.presets button:hover,.presets button:focus-visible{border-color:var(--blue);outline:none}
+.wdrow{display:grid;grid-template-columns:minmax(0,1fr) 84px 28px;gap:6px;margin-bottom:6px}
+.wdrow button{font:inherit;background:transparent;border:1px solid var(--line);border-radius:6px;color:var(--muted);cursor:pointer}
+.linkbtn{font:inherit;font-size:12px;background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;cursor:pointer}
+.onlyinv{color:var(--blue);text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
+.tipped{text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
+#tip{position:fixed;z-index:50;max-width:300px;background:var(--ink);color:var(--bg);font-size:12px;line-height:1.4;padding:7px 10px;border-radius:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);pointer-events:none;opacity:0;transition:opacity .12s}
+#tip.on{opacity:1}
+.muted{color:var(--muted)}
+th.sp,td.sp{color:var(--amber)} th.si,td.si{color:var(--blue)}
+th.sp{border-bottom:2px solid var(--amber)} th.si{border-bottom:2px solid var(--blue)}
+.wdout,td.sp .wdout,td.si .wdout{color:var(--green)}
+td.si .neg,td.sp .neg{color:var(--plum)}
+.info{display:inline-block;margin-left:2px;color:var(--blue);font-size:13px;line-height:1;cursor:pointer;vertical-align:baseline}
+legend .info{font-size:14px}
+.warn{color:var(--plum);font-size:12px}
+
+main{display:flex;flex-direction:column;gap:24px;min-width:0}
+.answers{display:grid;grid-template-columns:repeat(3,1fr);background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.answers.two{grid-template-columns:1fr 1fr}
+@media (max-width:620px){.answers,.answers.two{grid-template-columns:1fr}}
+.ans{padding:20px 22px;border-right:1px solid var(--line)}
+.ans:last-child{border-right:0}
+@media (max-width:620px){.ans{border-right:0;border-bottom:1px solid var(--line)}.ans:last-child{border-bottom:0}}
+.ans h3{margin:0;font-size:13px;font-weight:500;color:var(--muted)}
+.ans .big{font-size:clamp(26px,3vw,34px);font-weight:700;letter-spacing:-.02em;margin:4px 0 2px}
+.ans p{margin:0;font-size:13px;color:var(--muted)}
+.ans.save .big{color:var(--green)}
+.verdict{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:10px;padding:18px 22px}
+.verdict.bad{border-left-color:var(--plum)}
+.verdict p{margin:0 0 6px;max-width:75ch}
+#qvMain strong{color:var(--vc,inherit)}
+.verdict .vinfo{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.verdict p:last-child{margin:0;color:var(--muted);font-size:13px}
+.verdict p+p{color:var(--muted);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+.card h2{font-size:18px;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-weight:500;color:var(--muted);font-size:13px}
+.cmp td:nth-child(2){color:var(--muted)}
+.cmp tr.key td{font-weight:600}
+.cmp td.neg{color:var(--plum)}
+.cmp td.pos{color:var(--green)}
+.pos{color:var(--green)} .neg{color:var(--plum)}
+.chartbox{position:relative;height:320px}
+details summary{cursor:pointer;font-weight:600;font-size:16px}
+details[open] summary{margin-bottom:12px}
+.notes p{margin:0 0 8px;color:var(--muted);font-size:13px;max-width:80ch}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin-bottom:8px}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Home loan calculators</h1>
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-od" aria-controls="p-od" aria-selected="true">OD vs normal loan</button>
+    <button role="tab" id="t-bt" aria-controls="p-bt" aria-selected="false" tabindex="-1">Balance transfer</button>
+    <button role="tab" id="t-pp" aria-controls="p-pp" aria-selected="false" tabindex="-1">Prepay vs invest</button>
+  </div>
+  <section id="p-od" role="tabpanel" aria-labelledby="t-od">
+  <p class="lede">Compare a regular home loan with an overdraft-linked one like SBI MaxGain. Money sitting in the OD account reduces the balance you pay interest on, so you can see whether the higher OD rate is worth it.</p>
+  <div class="grid">
+    <aside>
+      <fieldset>
+        <legend>Loan</legend>
+        <div class="row3">
+          <div><label for="P">Loan amount</label><div class="inp"><span>₹</span><input id="P" type="number" inputmode="numeric" value="11200000" min="0" step="10000"></div></div>
+          <div><label for="yrs">Tenure</label><div class="inp"><input id="yrs" type="number" value="30" min="1" max="40" step="1"><span>yrs</span></div></div>
+          <div><label for="rate">Rate</label><div class="inp"><input id="rate" type="number" value="7" min="0" step="0.05"><span>%</span></div></div>
+        </div>
+        <div class="hint" data-for="P"></div>
+        <div class="narrow"><label for="spread">Extra rate for OD</label>
+        <div class="inp"><span>+</span><input id="spread" type="number" value="0.25" min="0" step="0.05"><span>%</span></div></div>
+        <div class="hint" id="odRateHint"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Cash in the OD account</legend>
+        <div class="row">
+          <div><label for="fixed">Parked at all times <span class="info" tabindex="0" data-tip="Never withdrawn, like an emergency fund.">ⓘ</span></label><div class="inp"><span>₹</span><input id="fixed" type="number" value="300000" min="0" step="10000"></div><div class="hint" data-for="fixed"></div></div>
+          <div><label for="lump">Parked on day one</label><div class="inp"><span>₹</span><input id="lump" type="number" value="1000000" min="0" step="10000"></div><div class="hint" data-for="lump"></div></div>
+        </div>
+        <label for="mOut">Take out every month</label>
+        <div class="inp"><span>₹</span><input id="mOut" type="number" value="50000" min="0" step="10000"></div>
+        <div class="hint" data-for="mOut"></div>
+        <label>One-off withdrawals <span class="info" tabindex="0" data-tip="Amount, and the month it comes out (month 1 = first month, 24 = end of year 2).">ⓘ</span></label>
+        <div id="wdList"></div>
+        <div class="presets"><button type="button" id="addWd">Add withdrawal</button></div>
+        <label for="dep">Take-home monthly income (incl. other income)</label>
+        <div class="inp"><span>₹</span><input id="dep" type="number" value="200000" min="0" step="1000"></div>
+        <div class="hint" data-for="dep"></div>
+        <div class="row nw">
+          <div><label for="stop" data-tip="Retirement" class="tipped">Income stops after</label><div class="inp"><input id="stop" type="number" value="12" min="0" step="1"><span>yrs</span></div></div>
+          <div><label for="growth">Yearly increase</label><div class="inp"><input id="growth" type="number" value="5" min="0" step="1"><span>%</span></div></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>How do you use your monthly income?</legend>
+        <div class="hint" style="margin:0 0 8px">Include your EMI in these expenses.</div>
+        <div class="wkgrid">
+          <div class="wk"><label for="w1">1st week</label><select id="w1"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40" selected>40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
+          <div class="wk"><label for="w2">2nd week</label><select id="w2"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20" selected>20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
+          <div class="wk"><label for="w3">3rd week</label><select id="w3"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15" selected>15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
+          <div class="wk"><label for="w4">4th week</label><select id="w4"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15" selected>15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
+          <div class="wk"><label for="w5">5th week</label><select id="w5"><option value="0">0%</option><option value="5">5%</option><option value="10" selected>10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
+        </div>
+        <div class="total"><span>Total monthly expenses (at month end)</span><strong id="totPct">–</strong></div>
+        <div class="hint" id="weekHint"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Fair comparison <span class="info" tabindex="0" data-tip="Cash in an OD earns nothing. With a normal loan, the same cash would sit in savings and earn this, taxed.">ⓘ</span></legend>
+        <div class="row nw">
+          <div><label for="sav">Savings account rate</label><div class="inp"><input id="sav" type="number" value="6.5" min="0" step="0.25"><span>%</span></div></div>
+          <div><label for="tax">Your tax slab</label><div class="inp"><input id="tax" type="number" value="37" min="0" max="45" step="1"><span>%</span></div></div>
+        </div>
+      </fieldset>
+    </aside>
+
+    <main>
+      <section class="answers" aria-live="polite">
+        <div class="ans"><h3>Normal loan EMI</h3><div class="big" id="emiN">–</div><p id="emiNsub"></p></div>
+        <div class="ans"><h3>OD loan EMI</h3><div class="big" id="emiO">–</div><p id="emiOsub"></p></div>
+        <div class="ans save"><h3>Interest saved with OD</h3><div class="big" id="saved">–</div><p id="savedSub"></p></div>
+      </section>
+
+      <section class="verdict" id="verdict"><p id="vMain"></p><p id="vSub"></p></section>
+
+      <section class="card">
+        <h2>Side by side</h2>
+        <p class="sub">Same loan amount and tenure. The OD EMI is fixed on the higher rate; parked cash makes it close faster.</p>
+        <div class="scroll">
+          <table class="cmp">
+            <thead><tr><th></th><th>Normal loan</th><th>OD loan</th><th>Difference</th></tr></thead>
+            <tbody id="cmpBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>What you owe over time</h2>
+        <p class="sub">"Net owed" is the OD outstanding minus the cash in the account. That's what the bank charges interest on.</p>
+        <div class="legend" id="legend"></div>
+        <div class="chartbox"><canvas id="chart" aria-label="Outstanding balance by year"></canvas></div>
+      </section>
+
+      <section class="card">
+        <details>
+          <summary>Year by year</summary>
+          <div class="scroll">
+            <table>
+              <thead><tr><th>Year</th><th>Interest, normal</th><th>Interest, OD</th><th>Cash in OD</th><th>OD outstanding</th><th>Net owed</th><th>Normal outstanding</th></tr></thead>
+              <tbody id="yearBody"></tbody>
+            </table>
+          </div>
+        </details>
+      </section>
+
+      <section class="card notes">
+        <h2>How it's worked out</h2>
+        <p>Each loan's EMI is fixed once on its own rate. Interest is charged monthly. For the OD, it's charged on outstanding minus your average cash balance that month.</p>
+        <p>Each month the deposit lands on day 1. Expenses (including EMI) are a share of that income, spent across five weeks in the split you set, same as SBI MaxGain, so money spent in week 4 still counts for the first three weeks. The always-parked amount is never touched. Monthly and one-off withdrawals come out of the rest of the parked cash at the start of their month. Income stops at retirement. Leftover cash carries forward and keeps building.</p>
+        <p>Banks compute this daily, so expect a small gap versus your statement. If the account runs dry the balance stops at zero and the shortfall is assumed to be paid from elsewhere.</p>
+        <p>Break-even balance is the cash you'd need to keep parked constantly, with no other flows, for the OD to cost the same interest as the normal loan.</p>
+      </section>
+    </main>
+  </div>
+  </section>
+
+  <section id="p-bt" role="tabpanel" aria-labelledby="t-bt" hidden>
+  <p class="lede">Is switching to a lower rate worth the transfer cost? Compare your current loan with a new one and see when the saving pays back the cost.</p>
+  <div class="grid">
+    <aside id="btAside">
+      <fieldset>
+        <legend>Your loan today</legend>
+        <div class="row c21">
+          <div><label for="bP">Outstanding amount</label><div class="inp"><span>₹</span><input id="bP" type="number" value="11200000" min="0" step="10000"></div></div>
+          <div><label for="bYrs">Remaining tenure</label><div class="inp"><input id="bYrs" type="number" value="30" min="1" max="40" step="1"><span>yrs</span></div></div>
+        </div>
+        <div class="hint" data-bfor="bP"></div>
+        <div class="row nw">
+          <div><label for="bR1">Current rate</label><div class="inp"><input id="bR1" type="number" value="7.20" min="0" step="0.05"><span>%</span></div></div>
+          <div><label for="bR2">New rate</label><div class="inp"><input id="bR2" type="number" value="7.00" min="0" step="0.05"><span>%</span></div></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Switching</legend>
+        <div class="row c12">
+          <div><label for="bAfter">Switch after</label><div class="inp"><input id="bAfter" type="number" value="1" min="0" step="1"><span>yrs</span></div></div>
+          <div><label for="bCost">Transfer cost <span class="info" tabindex="0" data-tip="Processing fee, legal, valuation, stamp duty and MOD charges.">ⓘ</span></label><div class="inp"><span>₹</span><input id="bCost" type="number" value="200000" min="0" step="5000"></div></div>
+        </div>
+        <div class="hint" id="bAfterHint"></div>
+        <div class="row nw">
+          <div><label for="bInv">FD rate (quarterly) <span class="info" tabindex="0" data-tip="FD rate and SIP CAGR both follow the new loan rate until you change them.">ⓘ</span></label><div class="inp"><input id="bInv" type="number" value="7.00" min="0" step="0.05"><span>%</span></div></div>
+          <div><label for="bSip">SIP CAGR</label><div class="inp"><input id="bSip" type="number" value="7.00" min="0" step="0.05"><span>%</span></div></div>
+        </div>
+        <label for="bMode">After switching</label>
+        <select id="bMode" style="width:100%"><option value="emi">Keep tenure, pay a lower EMI</option><option value="tenure">Keep EMI, finish sooner</option></select>
+      </fieldset>
+    </aside>
+    <main>
+      <section class="answers" aria-live="polite">
+        <div class="ans"><h3>Current EMI</h3><div class="big" id="bE1">–</div><p id="bE1s"></p></div>
+        <div class="ans"><h3>New EMI</h3><div class="big" id="bE2">–</div><p id="bE2s"></p></div>
+        <div class="ans save"><h3>Net saving after cost</h3><div class="big" id="bNet">–</div><p id="bNets"></p></div>
+      </section>
+      <section class="verdict" id="bVerdict"><p id="bvMain"></p><p id="bvSub"></p></section>
+      <section class="card">
+        <h2>Side by side</h2>
+        <p class="sub">Both start from today's outstanding. The switch column stays at the current rate until the switch, then moves to the new rate on what's left. The cost is paid at the switch.</p>
+        <div class="scroll"><table class="cmp"><thead><tr><th></th><th>Stay</th><th>Switch</th><th>Difference</th></tr></thead><tbody id="bBody"></tbody></table></div>
+      </section>
+      <section class="card">
+        <h2>Opportunity cost: FD vs SIP</h2>
+        <p class="sub" id="ocSub"></p>
+        <div class="scroll"><table class="cmp"><tbody id="ocBody"></tbody></table></div>
+      </section>
+      <section class="card">
+        <h2>When the switch pays for itself</h2>
+        <p class="sub">Cumulative interest saved by switching, against the transfer cost.</p>
+        <div class="legend" id="bLegend"></div>
+        <div class="chartbox"><canvas id="bChart" aria-label="Cumulative interest saved by year"></canvas></div>
+      </section>
+      <section class="card notes">
+        <h2>Things the maths leaves out</h2>
+        <p>Your current lender may cut your rate for a small fee if you ask. Try that first; it often beats switching.</p>
+        <p>The FD vs SIP view ignores tax. FD interest is taxed at your slab every year; SIP gains are taxed only when you sell, at a lower rate. Counting tax would tilt it further towards switching.</p>
+        <p>The new rate is usually floating and can be revised. A lower rate today isn't locked in.</p>
+      </section>
+    </main>
+  </div>
+  </section>
+
+  <section id="p-pp" role="tabpanel" aria-labelledby="t-pp" hidden>
+  <p class="lede">Got spare money? Compare putting it into the loan with investing it. Both sides spend exactly the same each month, so the one with more money at the end of the loan wins.</p>
+  <div class="grid">
+    <aside id="ppAside">
+      <fieldset>
+        <legend>Your loan</legend>
+        <div class="row3">
+          <div><label for="qP">Outstanding</label><div class="inp"><span>₹</span><input id="qP" type="number" value="11200000" min="0" step="10000"></div></div>
+          <div><label for="qYrs">Tenure</label><div class="inp"><input id="qYrs" type="number" value="30" min="1" max="40" step="1"><span>yrs</span></div></div>
+          <div><label for="qR">Loan rate</label><div class="inp"><input id="qR" type="number" value="7.2" min="0" step="0.05"><span>%</span></div></div>
+        </div>
+        <div class="hint"><span data-qfor="qP"></span> · <span id="qEmiHint"></span></div>
+      </fieldset>
+      <fieldset>
+        <legend>Spare money</legend>
+        <label for="qAmt">Amount each time <span class="info" id="qAmtInfo" tabindex="0" data-tip="Set to 1 EMI. It follows the EMI each time, including when the rate changes it. Type your own amount to fix it.">ⓘ</span></label>
+        <div class="inp"><span>₹</span><input id="qAmt" type="number" min="0" step="1000"></div>
+        <div class="hint" id="qAmtHint"></div>
+        <div class="row c21">
+          <div><label for="qFreq">How often</label><select id="qFreq" style="width:100%"><option value="once">Once</option><option value="month">Every month</option><option value="quarter" selected>Every quarter</option><option value="half">Every 6 months</option><option value="year">Every year</option></select></div>
+          <div><label for="qStart">First one in month</label><div class="inp"><input id="qStart" type="number" value="3" min="1" step="1"><span>mo</span></div></div>
+        </div>
+        <div class="row c11w" style="align-items:end">
+          <div><label for="qStop">Stop prepaying / SIP after <span class="info" id="qStopHint" tabindex="0" data-tip="">ⓘ</span></label>
+          <div class="inp"><input id="qStop" type="number" value="12" min="1" step="1"><span>yrs</span></div></div>
+          <label class="check" style="margin:0 0 6px"><input id="qDraw" type="checkbox" checked> Then pay EMI from investments</label>
+        </div>
+        <label for="qMode">After prepaying <span class="info" id="qModeHint" tabindex="0" data-tip="">ⓘ</span></label>
+        <select id="qMode" style="width:100%"><option value="cap" selected>Never raise EMI</option><option value="tenure">Keep EMI, finish sooner</option><option value="emi">Keep end date, lower EMI</option></select>
+      </fieldset>
+      <fieldset>
+        <legend>If you invest instead</legend>
+        <div class="row nw">
+          <div><label for="qRet">Expected CAGR</label><div class="inp"><input id="qRet" type="number" value="9" min="0" step="0.25"><span>%</span></div></div>
+          <div><label for="qTax">Tax on gains <span class="info" tabindex="0" data-tip="Tax on gains when you sell, including surcharge.">ⓘ</span></label><div class="inp"><input id="qTax" type="number" value="15" min="0" max="45" step="0.5"><span>%</span></div></div>
+        </div>
+      </fieldset>
+    </aside>
+    <main>
+      <section class="answers two" aria-live="polite">
+        <div class="ans"><h3>Investments at loan end</h3><div class="big" id="qCorp">–</div><p id="qCorpS"></p></div>
+        <div class="ans save"><h3 id="qWinH">Better option</h3><div class="big" id="qWin">–</div><p id="qWinS"></p></div>
+      </section>
+      <section class="verdict" id="qVerdict"><p id="qvMain"></p><p id="qvSub"></p><p class="vinfo">ⓘ For info: prepaying saves <strong id="qSaved">–</strong> of interest; <span id="qSavedS"></span>. This doesn't decide the winner on its own, because the invest side's money is growing meanwhile.</p></section>
+      <section class="card">
+        <h2>Side by side</h2>
+        <p class="sub">Measured at the end of your loan tenure, or later if a rate rise stretches it. While the prepay-side loan is running, all its spare money goes into that loan. Once it is paid off, the EMI it no longer pays is invested at the same return, so both sides spend the same each month. New money stops on both sides after your stop year, or when the prepay loan is paid off if that comes first; whatever is invested stays invested to the end. With "Then pay EMI from investments" ticked, EMIs after the stop year come from each side's investments first, then from your pocket.</p>
+        <div class="scroll"><table class="cmp"><thead><tr><th></th><th class="sp">Prepay</th><th class="si">Invest</th><th>Difference</th></tr></thead><tbody id="qBody"></tbody></table></div>
+      </section>
+      <section class="card">
+        <h2>Net worth over time</h2>
+        <p class="sub">Investments minus what you still owe on the loan.</p>
+        <div class="legend" id="qLegend"></div>
+        <div class="chartbox"><canvas id="qChart" aria-label="Net worth by year, prepay vs invest"></canvas></div>
+      </section>
+      <section class="card notes">
+        <h2>Things the maths leaves out</h2>
+        <p>When the return equals the loan rate, both come out about the same before tax. Tax on gains, and the risk that markets return less, tip it towards prepaying. Investing only wins if you reliably beat the break-even return.</p>
+        <p>Under the old tax regime, interest up to ₹2 L a year is deductible under Section 24(b), which makes the loan slightly cheaper than its rate. Prepaying also gives up the liquidity you'd keep by investing.</p>
+      </section>
+      <section class="card" id="mkt">
+        <h2>Actual market dynamics</h2>
+        <p class="sub">Instead of one steady return, the invested money follows the Nifty 50's real yearly ups and downs from 1996 to <span class="lastY"></span>. Year 1 of your loan gets the start year's return, year 2 the next, and so on. After the latest year the sequence runs backwards to your start year, then forwards again.</p>
+        <div class="row" style="max-width:520px">
+          <div><label for="mStart">Market sequence starts in</label><select id="mStart" style="width:100%"></select></div>
+          <div><label for="mRate">Loan rate each year</label><select id="mRate" style="width:100%"><option value="asis" selected>Historical, as it was</option><option value="shift">Historical, shifted to your rate</option><option value="fixed">Fixed at your rate</option></select></div>
+        </div>
+        <label class="check"><input id="mDiv" type="checkbox" checked> Add dividends to Nifty returns (about 1.3% a year)</label>
+        <div class="hint" style="max-width:75ch;margin-top:10px;line-height:1.55">
+          <strong>Loan rate options.</strong> <em>Historical, shifted to your rate</em>: the loan rate rises and falls each year the way SBI's home-loan rate did, but moved up or down so the latest year equals the loan rate you entered. Good for "what if rates swing like they used to, from where I am today."
+          <em>Historical, as it was</em>: uses SBI's actual approximate rate for each market year, ignoring the rate you entered. A 1996 start begins at 15%.
+          <em>Fixed at your rate</em>: the loan stays at the rate you entered for every year; only the Nifty moves.
+          In both historical options the EMI is recalculated whenever the rate changes.
+        </div>
+        <p class="hint" id="mRateHint" style="max-width:75ch"></p>
+        <div class="answers" style="margin-top:16px">
+          <div class="ans"><h3>Prepay, investments at end</h3><div class="big" id="mA">–</div><p id="mAs"></p></div>
+          <div class="ans"><h3>Invest, investments at end</h3><div class="big" id="mB">–</div><p id="mBs"></p></div>
+          <div class="ans save"><h3>Better option</h3><div class="big" id="mW">–</div><p id="mWs"></p></div>
+        </div>
+        <p id="mSummary" style="margin:16px 0 6px;max-width:75ch"></p>
+        <p class="sub">Result for every possible start year. Bars above zero mean prepaying won, below zero mean investing won.</p>
+        <div class="chartbox"><canvas id="mChart" aria-label="Prepay minus invest by market start year"></canvas></div>
+        <h3 style="font-size:16px;margin:22px 0 4px">Year by year: SIP vs prepayment</h3>
+        <p class="sub" id="mTblSub"></p>
+        <div class="scroll"><table><thead id="mHead"><tr><th>Loan yr</th><th>Market yr</th><th id="mRetTh">Nifty return</th><th>Loan rate</th><th>Prepaid / SIP put in</th><th>EMI</th><th>Prepay: owed</th><th>Prepay: invested</th><th>Invest: owed</th><th>Invest: SIP value</th><th>Ahead</th></tr></thead><tbody id="mTbl"></tbody></table></div>
+        <p class="hint" id="mTblNote" style="max-width:80ch"></p>
+        <p class="sub" style="margin-top:10px">Calendar-year price returns from year-end closing levels (1995 close: 908.53, 2025 close: 26,129.60<span class="partNote"></span>). Historical loan rates are approximate yearly averages of SBI's floating home-loan rate, for illustration. Past returns don't predict future ones.</p>
+      </section>
+    </main>
+  </div>
+  </section>
+</div>
+
+<script src="chart.umd.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const inr = new Intl.NumberFormat('en-IN',{maximumFractionDigits:0});
+const rs = v => '₹' + inr.format(Math.round(v));
+function short(v){
+  const a=Math.abs(v), s=v<0?'-':'';
+  if(a>=1e7) return s+'₹'+(a/1e7).toFixed(2)+' Cr';
+  if(a>=1e5) return s+'₹'+(a/1e5).toFixed(2)+' L';
+  return s+'₹'+inr.format(Math.round(a));
+}
+function dur(m){ const y=Math.floor(m/12), r=m%12; return (y?y+' yr'+(y>1?'s':''):'') + (y&&r?' ':'') + (r?r+' mo':'') || '0 mo'; }
+function emi(P,rA,n){ const r=rA/1200; if(!r) return P/n; const f=Math.pow(1+r,n); return P*r*f/(f-1); }
+
+// Fraction of the month that money spent in each week is out of the account (week midpoints in a 30.4 day month)
+const OUT_FRAC=[3.5,10.5,17.5,24.5,29.2].map(d=>1-d/30.4);
+
+function readInputs(){
+  const n=id=>Math.max(0,parseFloat($(id).value)||0);
+  const w=[1,2,3,4,5].map(i=>n('w'+i));
+  const wsum=w.reduce((a,b)=>a+b,0);
+  const oneOff={};
+  document.querySelectorAll('.wdrow').forEach(r=>{
+    const a=Math.max(0,parseFloat(r.querySelector('.wa').value)||0), mo=Math.max(1,Math.round(parseFloat(r.querySelector('.wm').value)||1));
+    oneOff[mo]=(oneOff[mo]||0)+a;
+  });
+  return {oneOff,P:n('P'),N:Math.max(1,Math.round(n('yrs')*12)),rate:n('rate'),spread:n('spread'),
+    lump:n('lump'),dep:n('dep'),wdPct:Math.min(100,wsum)/100,wd:n('dep')*Math.min(100,wsum)/100,mOut:n('mOut'),fixed:n('fixed'),stop:n('stop'),fromAcct:false,growth:n('growth'),
+    sav:n('sav'),tax:Math.min(100,n('tax')),w,wsum,
+    outFactor: wsum>0 ? w.reduce((a,x,i)=>a+(x/wsum)*OUT_FRAC[i],0) : 0};
+}
+
+function simulate(p,mode){
+  const isOD = mode==='od';
+  const rate = isOD ? p.rate+p.spread : p.rate, r=rate/1200;
+  const E = emi(p.P,rate,p.N);
+  let out=p.P, bal=p.lump, totI=0, earn=0, m=0, closeMonth=null;
+  const rows=[];
+  while(out>0.5 && m<p.N+12){
+    m++;
+    const g=Math.pow(1+p.growth/100,Math.floor((m-1)/12));
+    const D=(m<=p.stop*12)?p.dep*g:0, W=D*p.wdPct;
+    const start=Math.max(0,bal-((p.oneOff&&p.oneOff[m])||0)-(p.mOut||0))+D;
+    const F=p.fixed||0;
+    const avg=Math.max(0,start-W*p.outFactor)+F;
+    const I = isOD ? Math.max(0,out-avg)*r : out*r;
+    const pay=Math.min(E,out+I);
+    out=Math.max(0,out-(pay-I));
+    totI+=I;
+    let e=0;
+    if(!isOD){ e=avg*p.sav/1200*(1-p.tax/100); earn+=e; }
+    bal=Math.max(0,start-W-(p.fromAcct?pay:0)+e);
+    if(isOD && closeMonth===null && out>0.5 && bal+F>=out) closeMonth=m;
+    rows.push({m,I,out,bal:bal+F,net:Math.max(0,out-bal-F),earnCum:earn});
+  }
+  return {E,rate,totI,months:m,rows,closeMonth};
+}
+
+function breakEven(p,normalI){
+  if(p.spread<=0) return 0;
+  const base={...p,dep:0,wd:0,wdPct:0,mOut:0,fixed:0,fromAcct:false,growth:0,oneOff:{}};
+  let lo=0,hi=p.P;
+  for(let i=0;i<40;i++){
+    const mid=(lo+hi)/2;
+    const r=simulate({...base,lump:mid},'od');
+    if(r.totI>normalI) lo=mid; else hi=mid;
+  }
+  return hi;
+}
+
+let chart;
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+function render(){
+  const p=readInputs();
+  ['P','fixed','lump','dep','mOut'].forEach(id=>{ const h=document.querySelector(`.hint[data-for="${id}"]`); if(h) h.textContent=short(p[id]); });
+  $('odRateHint').textContent='OD runs at '+(p.rate+p.spread).toFixed(2)+'%';
+  $('totPct').textContent=p.wsum+'%';
+  const left=p.dep-p.wd;
+  $('weekHint').innerHTML = p.wsum>100 ? `<span class="warn">Over 100%. Capped at 100% of income.</span>`
+    : `Spending ${short(p.wd)} of ${short(p.dep)} a month. ` + (left>0 ? `${short(left)} is added to the account each month.` : `Nothing is added month to month; the saving comes from salary sitting in the account before it's spent.`);
+
+  const N=simulate(p,'normal'), O=simulate(p,'od');
+  const saved=N.totI-O.totI;
+  const foregone = O.months<=N.rows.length ? N.rows[O.months-1].earnCum : N.rows[N.rows.length-1].earnCum;
+  const net=saved-foregone;
+  const be=breakEven(p,N.totI);
+  const earlier=N.months-O.months;
+
+  $('emiN').textContent=rs(N.E);
+  $('emiNsub').textContent=`at ${p.rate}% for ${dur(p.N)}`;
+  $('emiO').textContent=rs(O.E);
+  $('emiOsub').textContent=`at ${O.rate.toFixed(2)}%, ${rs(O.E-N.E)} more a month`;
+  $('saved').textContent=short(saved);
+  $('saved').style.color = saved>=0 ? 'var(--green)' : 'var(--plum)';
+  $('savedSub').textContent = earlier>0 ? `loan closes ${dur(earlier)} earlier` : `no change in tenure`;
+
+  const v=$('verdict');
+  if(net>=0){
+    v.classList.remove('bad');
+    $('vMain').innerHTML=`The OD loan comes out <strong>${short(net)}</strong> ahead. You save ${short(saved)} in interest and give up about ${short(foregone)} the same cash would have earned in a savings account after tax.`;
+  } else {
+    v.classList.add('bad');
+    $('vMain').innerHTML=`The normal loan comes out <strong>${short(-net)}</strong> ahead. The OD saves ${short(saved)} in interest, but the cash would earn ${short(foregone)} in savings after tax, so the higher OD rate isn't paying off.`;
+  }
+  $('vSub').textContent = `You need to keep at least ${short(be)} parked all the time just to break even on the extra ${p.spread}% rate.` +
+    (O.closeMonth ? ` From ${dur(O.closeMonth)} in, the cash in your account covers the full outstanding and you could close the loan.` : '');
+
+  const diff=(a,b,good)=>{ const d=b-a; const cls = d===0?'':((good? d<0 : d>0)?'pos':'neg'); return `<td class="${cls}">${d>0?'+':''}${short(d)}</td>`; };
+  $('cmpBody').innerHTML=`
+    <tr><td>Interest rate</td><td>${p.rate}%</td><td>${O.rate.toFixed(2)}%</td><td>+${p.spread}%</td></tr>
+    <tr><td>Monthly EMI</td><td>${rs(N.E)}</td><td>${rs(O.E)}</td>${diff(N.E,O.E,true)}</tr>
+    <tr><td>Time to repay</td><td>${dur(N.months)}</td><td>${dur(O.months)}</td><td class="${earlier>0?'pos':''}">${earlier>0?dur(earlier)+' sooner':'same'}</td></tr>
+    <tr class="key"><td>Total interest</td><td>${short(N.totI)}</td><td>${short(O.totI)}</td>${diff(N.totI,O.totI,true)}</tr>
+    <tr><td>Total paid to bank</td><td>${short(N.totI+p.P)}</td><td>${short(O.totI+p.P)}</td>${diff(N.totI,O.totI,true)}</tr>
+    <tr><td>Savings interest given up (after tax)</td><td>–</td><td>${short(foregone)}</td><td class="neg">${short(-foregone)}</td></tr>
+    <tr class="key"><td>Net benefit of OD</td><td>–</td><td>–</td><td class="${net>=0?'pos':'neg'}">${short(net)}</td></tr>
+    <tr><td>Cash in OD account at closure</td><td>–</td><td>${short(O.rows[O.rows.length-1].bal)}</td><td></td></tr>`;
+
+  // yearly
+  const years=Math.ceil(Math.max(N.months,O.months)/12);
+  const yr=[];
+  for(let y=1;y<=years;y++){
+    const sl=(rows)=>rows.filter(r=>r.m>(y-1)*12&&r.m<=y*12);
+    const nr=sl(N.rows), or=sl(O.rows);
+    const last=(arr,k,def)=>arr.length?arr[arr.length-1][k]:def;
+    yr.push({y,
+      iN:nr.reduce((a,r)=>a+r.I,0), iO:or.reduce((a,r)=>a+r.I,0),
+      bal:last(or,'bal',0), oO:last(or,'out',0), net:last(or,'net',0), oN:last(nr,'out',0)});
+  }
+  $('yearBody').innerHTML=yr.map(r=>`<tr><td>${r.y}</td><td>${short(r.iN)}</td><td>${short(r.iO)}</td><td>${short(r.bal)}</td><td>${short(r.oO)}</td><td>${short(r.net)}</td><td>${short(r.oN)}</td></tr>`).join('');
+
+  // chart
+  const labels=['Start',...yr.map(r=>'Y'+r.y)];
+  const series=[
+    {label:'Normal outstanding',color:css('--muted'),data:[p.P,...yr.map(r=>r.oN)],dash:[]},
+    {label:'OD outstanding',color:css('--blue'),data:[p.P,...yr.map(r=>r.oO)],dash:[]},
+    {label:'Net owed (OD minus cash)',color:css('--plum'),data:[Math.max(0,p.P-p.lump-p.fixed),...yr.map(r=>r.net)],dash:[6,4]},
+    {label:'Cash in OD account',color:css('--green'),data:[p.lump+p.fixed,...yr.map(r=>r.bal)],dash:[]}
+  ];
+  $('legend').innerHTML=series.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join('');
+  if(typeof Chart==='undefined') return;
+  const ds=series.map(s=>({label:s.label,data:s.data,borderColor:s.color,backgroundColor:s.color,borderDash:s.dash,borderWidth:2,pointRadius:0,tension:.25}));
+  if(chart){ chart.data.labels=labels; chart.data.datasets=ds; chart.options.scales.x.ticks.color=css('--muted'); chart.options.scales.y.ticks.color=css('--muted'); chart.options.scales.y.grid.color=css('--line'); chart.update('none'); return; }
+  chart=new Chart($('chart'),{type:'line',data:{labels,datasets:ds},options:{
+    responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+short(c.parsed.y)}}},
+    scales:{x:{grid:{display:false},ticks:{color:css('--muted'),maxTicksLimit:12}},
+            y:{grid:{color:css('--line')},ticks:{color:css('--muted'),callback:v=>short(v)}}}}});
+}
+
+function addWd(amt,mo){
+  const d=document.createElement('div'); d.className='wdrow';
+  d.innerHTML=`<div class="inp"><span>₹</span><input class="wa" type="number" min="0" step="10000" value="${amt}" aria-label="Withdrawal amount"></div><div class="inp"><span>mo</span><input class="wm" type="number" min="1" step="1" value="${mo}" aria-label="Month of withdrawal"></div><button type="button" aria-label="Remove withdrawal">×</button>`;
+  d.querySelector('button').onclick=()=>{d.remove();render();};
+  $('wdList').appendChild(d);
+}
+$('addWd').onclick=()=>{addWd(100000,12);render();};
+addWd(250000,3);
+addWd(250000,6);
+document.querySelector('aside').addEventListener('input',render);
+
+// ---------- Balance transfer ----------
+function amort(P,rA,E,maxM){
+  const r=rA/1200; let out=P,tot=0,m=0; const cum=[];
+  const outs=[], pays=[];
+  while(out>0.5 && m<maxM){ m++; const I=out*r; const pay=Math.min(E,out+I); out-=pay-I; tot+=I; cum.push(tot); outs.push(out); pays.push(pay); }
+  return {tot,months:m,cum,outs,pays};
+}
+let bChart;
+function renderBT(){
+  const n=id=>Math.max(0,parseFloat($(id).value)||0);
+  const P=n('bP'), N=Math.max(1,Math.round(n('bYrs')*12)), r1=n('bR1'), r2=n('bR2'), cost=n('bCost'), mode=$('bMode').value;
+  document.querySelectorAll('[data-bfor]').forEach(h=>h.textContent=short(n(h.dataset.bfor)));
+  const E1=emi(P,r1,N);
+  const A=amort(P,r1,E1,N+600);
+  const k=Math.min(Math.round(n('bAfter')*12),Math.max(0,N-1));
+  const Pk = k>0 ? A.outs[k-1] : P, Nr=N-k, preI = k>0 ? A.cum[k-1] : 0;
+  const E2 = mode==='emi' ? emi(Pk,r2,Nr) : E1;
+  const S=amort(Pk,r2,E2,Nr+600);
+  const B={tot:preI+S.tot, months:k+S.months, cum:[...A.cum.slice(0,k),...S.cum.map(c=>c+preI)]};
+  const gross=A.tot-B.tot, net=gross-cost;
+  let be=null;
+  for(let i=k;i<A.months;i++){ const b=B.cum[Math.min(i,B.cum.length-1)]; if(A.cum[i]-b>=cost){be=i+1-k;break;} }
+  const inv=n('bInv'), sipR=n('bSip'), T=A.months, H=Math.max(0,T-k);
+  // Stay: the cost sits in an FD from the switch date to the end of the current loan, compounded quarterly
+  const fv=cost*Math.pow(1+inv/400,H/3);
+  // Switch: every month's payment difference goes into a SIP at the CAGR, invested at month end
+  const im=Math.pow(1+sipR/100,1/12)-1, bp=[...A.pays.slice(0,k),...S.pays];
+  let sipFV=0, sipIn=0;
+  for(let m=k;m<T;m++){ const c=(A.pays[m]||0)-(bp[m]||0); sipIn+=c; sipFV+=c*Math.pow(1+im,T-(m+1)); }
+  const netOC=sipFV-fv;
+  $('bAfterHint').textContent = k>0 ? `Outstanding then: ${short(Pk)}, ${dur(Nr)} left` : 'Switching today';
+  $('bE1').textContent=rs(E1); $('bE1s').textContent=`at ${r1}% for ${dur(N)}`;
+  $('bE2').textContent=rs(E2);
+  $('bE2s').textContent= (mode==='emi' ? `at ${r2}%, ${rs(E1-E2)} less a month` : `same EMI, done in ${dur(B.months)}`) + (k>0?`, from year ${+(k/12).toFixed(1)}`:'');
+  $('bNet').textContent=short(net); $('bNet').style.color= net>=0?'var(--green)':'var(--plum)';
+  $('bNets').textContent=`${short(gross)} interest saved minus ${short(cost)} cost`;
+  const v=$('bVerdict');
+  if(r2>=r1){ v.classList.add('bad'); $('bvMain').innerHTML='The new rate isn\'t lower, so switching only adds cost.'; $('bvSub').textContent=''; }
+  else if(net>=0){ v.classList.remove('bad');
+    $('bvMain').innerHTML=`Switching saves <strong>${short(net)}</strong> after the ${short(cost)} cost.`;
+    $('bvSub').textContent= be ? `It pays for itself ${dur(be)} after you switch. If you might sell, prepay or refinance before then, don't switch.` : '';
+  } else { v.classList.add('bad');
+    $('bvMain').innerHTML=`Switching loses <strong>${short(-net)}</strong>. The ${(r1-r2).toFixed(2)}% cut doesn't cover the ${short(cost)} cost.`;
+    $('bvSub').textContent=''; }
+  const diff=(a,b)=>{const d=b-a; return `<td class="${d<0?'pos':d>0?'neg':''}">${d>0?'+':''}${short(d)}</td>`;};
+  const monthly=E1-E2;
+  $('ocSub').textContent=`Both views run from the switch to the end of your current loan (${dur(H)}). Stay: the ${short(cost)} goes into an FD at ${inv}%, compounded quarterly. Switch: whatever you pay less each month goes into a SIP at ${sipR}% CAGR.`;
+  $('ocBody').innerHTML=`
+    <tr><td>Stay: ${short(cost)} in FD grows to</td><td>${short(fv)}</td></tr>
+    <tr><td>Switch: money put into SIP</td><td>${short(sipIn)}${mode==='emi'&&monthly>0?` (${rs(monthly)} a month)`:mode==='tenure'?` (full EMI after the loan closes early)`:''}</td></tr>
+    <tr><td>Switch: SIP grows to</td><td>${short(sipFV)}</td></tr>
+    <tr class="key"><td>Switching leaves you better off by</td><td class="${netOC>=0?'pos':'neg'}">${short(netOC)}</td></tr>`;
+  if(r2<r1){ if(netOC>=0){ v.classList.remove('bad'); $('bvSub').textContent += ` Counting the FD and SIP, you end ${short(netOC)} richer by switching.`; }
+    else { v.classList.add('bad'); $('bvSub').textContent = `Counting the FD and SIP, staying leaves you ${short(-netOC)} richer.`; } }
+  $('bBody').innerHTML=`
+    <tr><td>Interest rate</td><td>${r1}%</td><td>${k>0?r1+"% then "+r2+"%":r2+"%"}</td><td>${(r2-r1).toFixed(2)}%</td></tr>
+    <tr><td>Switch happens</td><td>–</td><td>${k>0?"after "+dur(k):"today"}</td><td></td></tr>
+    <tr><td>Outstanding at switch</td><td>–</td><td>${short(Pk)}</td><td></td></tr>
+    <tr><td>Monthly EMI</td><td>${rs(E1)}</td><td>${rs(E2)}</td>${diff(E1,E2)}</tr>
+    <tr><td>Time to repay</td><td>${dur(A.months)}</td><td>${dur(B.months)}</td><td class="${B.months<A.months?'pos':''}">${B.months<A.months?dur(A.months-B.months)+' sooner':'same'}</td></tr>
+    <tr class="key"><td>Total interest</td><td>${short(A.tot)}</td><td>${short(B.tot)}</td>${diff(A.tot,B.tot)}</tr>
+    <tr><td>Transfer cost</td><td>–</td><td>${short(cost)}</td><td class="neg">+${short(cost)}</td></tr>
+    <tr class="key"><td>Total cost of loan</td><td>${short(A.tot+P)}</td><td>${short(B.tot+P+cost)}</td>${diff(A.tot+P,B.tot+P+cost)}</tr>
+    <tr><td>Pays for itself (after switching)</td><td>–</td><td>${be?dur(be):'never'}</td><td></td></tr>`;
+  const yrs=Math.ceil(A.months/12), labels=[], sv=[], cs=[];
+  for(let y=0;y<=yrs;y++){ labels.push(y?'Y'+y:'Start'); const i=Math.min(y*12,A.months)-1;
+    sv.push(i<0?0:A.cum[i]-B.cum[Math.min(i,B.cum.length-1)]); cs.push(cost); }
+  const series=[{label:'Interest saved so far',color:css('--green'),data:sv,dash:[]},{label:'Transfer cost',color:css('--plum'),data:cs,dash:[6,4]}];
+  $('bLegend').innerHTML=series.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join('');
+  if(typeof Chart==='undefined'||$('p-bt').hidden) return;
+  const ds=series.map(s=>({label:s.label,data:s.data,borderColor:s.color,backgroundColor:s.color,borderDash:s.dash,borderWidth:2,pointRadius:0,tension:.25}));
+  if(bChart){ bChart.data.labels=labels; bChart.data.datasets=ds; bChart.update('none'); return; }
+  bChart=new Chart($('bChart'),{type:'line',data:{labels,datasets:ds},options:{
+    responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+short(c.parsed.y)}}},
+    scales:{x:{grid:{display:false},ticks:{color:css('--muted'),maxTicksLimit:12}},y:{grid:{color:css('--line')},ticks:{color:css('--muted'),callback:v=>short(v)}}}}});
+}
+let bInvTouched=false, bSipTouched=false;
+$('bInv').addEventListener('input',()=>bInvTouched=true);
+$('bSip').addEventListener('input',()=>bSipTouched=true);
+$('bR2').addEventListener('input',()=>{ if(!bInvTouched) $('bInv').value=$('bR2').value; if(!bSipTouched) $('bSip').value=$('bR2').value; });
+$('btAside').addEventListener('input',renderBT);
+$('btAside').addEventListener('change',renderBT);
+
+
+// ---------- Prepay vs invest ----------
+function ppSim(q,prepay,ret,rates,basePay,cutoff){
+  // ret: constant % or array of yearly %; rates: optional array of yearly loan rates; basePay: invest-path EMI per month (keeps budgets equal)
+  const seq=Array.isArray(ret)?ret.map(x=>Math.pow(1+x/100,1/12)-1):null, imC=seq?0:Math.pow(1+ret/100,1/12)-1;
+  // Beyond the 30 years of history (only when the loan stretches), hold the last rate and use the sequence's average market return
+  const rAt=m=>rates?rates[Math.min(Math.floor((m-1)/12),rates.length-1)]:q.r;
+  const seqAvg=seq?Math.pow(seq.reduce((a,x)=>a*Math.pow(1+x,12),1),1/(12*seq.length))-1:0;
+  let cur=rAt(1), E=emi(q.P,cur,q.N);
+  const E0=E;
+  let out=q.P, corpus=0, put=0, totI=0, closed=null, prepaid=0, pocket=0, basis=0, taxPaid=0, yTax=0, contrib=0, yWd=0, wdTot=0;
+  const nw=[], Es=[], yr=[], loanCF=[], invCF=[];
+  let yPre=0, yPut=0, yAmt=0, amtTot=0, yEmi=0, yDiff=0, diffTot=0;
+  const step={once:0,month:1,quarter:3,half:6,year:12}[q.freq];
+  const L=q.H||q.N, Estart=E, cap=q.mode==='cap', MAXM=480;
+  for(let m=1;m<=L;m++){
+    const ry=rAt(m);
+    if(ry!==cur && out>0.5 && cap){
+      // Rate up: keep the current EMI and stretch tenure. Rate down: EMI falls. EMI never goes up, except to avoid negative amortisation / the 40-year limit.
+      E=Math.min(emi(out,ry,Math.max(1,q.N-m+1)),E);
+      if(E<=out*ry/1200*1.001) E=emi(out,ry,Math.max(1,MAXM-m+1));
+      if(prepay && basePay && basePay[m-1]!=null) E=Math.min(E,basePay[m-1]);
+      cur=ry;
+    } else if(ry!==cur && out>0.5){
+      let nrem=q.N-m+1;
+      if(prepay && q.mode==='tenure'){ const r0=cur/1200, x=1-out*r0/E; if(r0>0 && x>0) nrem=Math.min(nrem,Math.max(1,Math.ceil(-Math.log(x)/Math.log(1+r0)))); }
+      E=emi(out,ry,nrem); if(basePay) E=Math.min(E,basePay[m-1]); cur=ry;
+    }
+    if(prepay && basePay && q.mode==='tenure' && out>0.5 && basePay[m-1]!=null) E=basePay[m-1];
+    if(prepay && basePay && cap && out>0.5 && basePay[m-1]!=null) E=Math.min(E,basePay[m-1]);
+    const r=cur/1200;
+    { const yi=Math.floor((m-1)/12); corpus*=1+(seq?(yi<seq.length?seq[yi]:seqAvg):imC); }
+    const due = step===0 ? m===q.start : (m>=q.start && (m-q.start)%step===0);
+    // Spare money flows only while the prepay-side loan is still running; after that both sides stop adding it
+    const active = (m<=(q.stopM||q.N)) && (prepay ? closed===null : (cutoff==null || m<=cutoff));
+    const bp = basePay ? (basePay[m-1]??0) : E;
+    const amtNow = q.amtEmi ? bp : q.amt;
+    const amt=(due&&active)?amtNow:0; yAmt+=amt; amtTot+=amt;
+    let pay=0;
+    if(out>0.5){ const I=out*r; pay=Math.min(E,out+I); out-=pay-I; totI+=I; if(!yEmi) yEmi=E; }
+    Es.push(E);
+    const drawing = q.draw && m>(q.stopM||q.N);
+    let spare=(drawing?0:(basePay?bp:(out>0.5||pay>0?E:0)))+amt-pay;
+    let preM=0;
+    if(prepay && amt>0 && out>0.5){ const pre=Math.min(amt,out); preM=pre; out-=pre; spare-=pre; prepaid+=pre; yPre+=pre;
+      if(q.mode==='emi' && out>0.5) E=emi(out,cur,q.N-m); }
+    //     // While the prepay-side loan is running, any spare cash (EMI gap etc.) goes into the loan, never into investments
+    if(prepay && basePay && !drawing && out>0.5 && spare>0.5){ const gap=Math.min(spare,out); out-=gap; spare-=gap; preM+=gap; prepaid+=gap; yPre+=gap; yDiff+=gap; diffTot+=gap; }
+    if(out<=0.5 && closed===null){ out=0; closed=m; }
+    loanCF.push(pay+preM);
+    // Contributions add to the cost basis; withdrawals take basis out pro rata. Investments never go below zero:
+    // any shortfall is paid from your pocket and tracked separately (it earns nothing).
+    let flow=spare;
+    if(flow>=0){ corpus+=flow; basis+=flow; contrib+=flow; }
+    else {
+      // Withdrawing to pay EMI: the gains part of each withdrawal is taxed now, so sell a bit extra to cover the tax
+      const need=-flow, gf=corpus>0?Math.max(0,(corpus-basis)/corpus):0, tr=gf*q.tax/100;
+      let g=Math.min(need/(1-tr), Math.max(0,corpus));
+      const net=g*(1-tr), tx=g*tr;
+      if(corpus>0) basis-=basis*g/corpus;
+      corpus-=g; taxPaid+=tx; yTax+=tx; yWd+=g; wdTot+=g;
+      const short=need-net; if(short>0.5) pocket+=short;
+      flow=-g;
+    }
+    put+=spare; yPut+=spare; invCF.push(flow);
+    nw.push(corpus-out-pocket);
+    if(!basePay && closed!==null && pay===0) Es[Es.length-1]=0;
+    if(m%12===0||m===L){ yr.push({rate:cur,out,corpus,pocket,tax:yTax,diff:yDiff,wd:yWd,pre:yPre,put:yPut,amt:yAmt,emi:E,emiPaid:yEmi}); yPre=0; yPut=0; yAmt=0; yEmi=0; yTax=0; yDiff=0; yWd=0; }
+  }
+  const after=corpus-Math.max(0,corpus-basis)*q.tax/100-pocket;
+  return {E0,totI,closed:closed||L,corpus:after,invEnd:after+pocket,diffTot,wdTot,contrib,corpusPre:corpus,pocket,taxPaid,put,amtTot,prepaid,nw,endE:E,Es,yr,loanCF,invCF};
+}
+// Annualised IRR of monthly flows (index 0 = month 1) with an optional amount at time 0 and a final value at the end
+function irrA(t0,flows,final){
+  const npv=i=>{ let v=t0; for(let k=0;k<flows.length;k++) v+=flows[k]/Math.pow(1+i,k+1); return v+final/Math.pow(1+i,flows.length); };
+  let lo=-0.05, hi=0.1, flo=npv(lo), fhi=npv(hi);
+  if(flo*fhi>0) return null;
+  for(let n=0;n<80;n++){ const mid=(lo+hi)/2, fm=npv(mid); if(fm*flo>0){lo=mid;flo=fm;} else hi=mid; }
+  return (Math.pow(1+(lo+hi)/2,12)-1)*100;
+}
+function ppPair(q,ret,rates){
+  // In "never raise EMI" mode the invest-side loan can run past the tenure; compare both sides at its real end
+  let H=q.N;
+  if(q.mode==='cap' && rates){ const t=ppSim({...q,H:480},false,ret,rates); H=Math.max(q.N,t.closed); }
+  const q2={...q,H};
+  const B0=ppSim(q2,false,ret,rates);
+  const A=ppSim(q2,true,ret,rates,B0.Es);
+  const B=ppSim(q2,false,ret,rates,null,A.closed<H?A.closed:null);
+  return {A,B,H};
+}
+
+// ---------- Actual market dynamics (Nifty 50) ----------
+const NIFTY_CLOSE={1995:908.53,1996:899.10,1997:1079.40,1998:884.25,1999:1480.45,2000:1263.55,2001:1059.05,2002:1093.50,2003:1879.75,2004:2080.50,2005:2836.55,2006:3966.40,2007:6138.60,2008:2959.15,2009:5201.05,2010:6134.50,2011:4624.30,2012:5905.10,2013:6304.00,2014:8282.70,2015:7946.35,2016:8185.80,2017:10530.70,2018:10862.55,2019:12168.45,2020:13981.75,2021:17354.05,2022:18105.30,2023:21731.40,2024:23644.80,2025:26129.60,2026:22620.45};
+// The current year counts once more than 3 months of it have passed (2026 level is the 30 Sep 2026 close)
+const PARTIAL={year:2026,asOf:'30 Sep 2026'};
+// Approximate SBI floating home-loan card rate, average for each calendar year (illustrative)
+const HL_RATE={1996:15.0,1997:14.5,1998:14.0,1999:13.0,2000:12.0,2001:11.0,2002:9.5,2003:8.25,2004:7.75,2005:8.0,2006:9.0,2007:10.5,2008:11.0,2009:8.5,2010:8.5,2011:10.5,2012:10.5,2013:10.2,2014:10.15,2015:9.65,2016:9.1,2017:8.35,2018:8.6,2019:8.4,2020:7.0,2021:6.7,2022:7.5,2023:9.15,2024:8.5,2025:7.9,2026:7.5};
+const NIFTY_YEARS=[], NIFTY_RET=[];
+const _now=new Date();
+const LAST_YEAR = (_now.getFullYear()>PARTIAL.year || _now.getMonth()>=3) ? PARTIAL.year : PARTIAL.year-1;
+for(let y=1996;y<=LAST_YEAR;y++){ NIFTY_YEARS.push(y); NIFTY_RET.push((NIFTY_CLOSE[y]/NIFTY_CLOSE[y-1]-1)*100); }
+const NY=NIFTY_YEARS.length;
+const HL_YEARS=NIFTY_YEARS.slice();
+(function(){
+  $('mStart').innerHTML=NIFTY_YEARS.map(y=>`<option value="${y}"${y===2002?' selected':''}>${y}</option>`).join('');
+})();
+let mChart;
+document.querySelectorAll('.lastY').forEach(e=>e.textContent=LAST_YEAR===PARTIAL.year?`${LAST_YEAR} (to ${PARTIAL.asOf})`:LAST_YEAR);
+document.querySelectorAll('.partNote').forEach(e=>e.textContent=LAST_YEAR===PARTIAL.year?`; ${PARTIAL.year} uses the year-to-date return to ${PARTIAL.asOf}, close 22,620.45`:'');
+function renderMarket(q){
+  const div=$('mDiv').checked?1.3:0, start=+$('mStart').value;
+  const base=NIFTY_RET.map(x=>x+div);
+  // Start at the chosen year, run forward to the latest year, then backwards to the start year, then forward again... (covers up to 40 years)
+  const yIdx=(i,k)=>{ const len=NY-i; if(len<=1) return i; const per=2*(len-1), p=k%per; return p<len ? i+p : i+per-p; };
+  const cyc=(arr,i)=>{ const out=[]; for(let k=0;k<40;k++) out.push(arr[yIdx(i,k)]); return out; };
+  const rot=i=>cyc(base,i);
+  const rmode=$('mRate').value;
+  const hist=HL_YEARS.map(y=>rmode==='asis'?HL_RATE[y]:+(q.r+HL_RATE[y]-HL_RATE[LAST_YEAR]).toFixed(2));
+  const rrot=i=>rmode==='fixed'?null:cyc(hist,i);
+  const res=NIFTY_YEARS.map((y,i)=>{ const s=rot(i); const {A,B}=ppPair(q,s,rrot(i)); return {y,A:A.corpus,B:B.corpus,d:A.corpus-B.corpus,AA:A,BB:B}; });
+  const cur=res[NIFTY_YEARS.indexOf(start)];
+  $('mRateHint').textContent = rmode==='fixed' ? `Loan stays at ${q.r}% every year.`
+    : rmode==='asis' ? `Loan uses the approximate SBI home-loan rate of each market year (from 15% in 1996 down to 6.7% in 2021). ${q.mode==='cap'?' EMI never goes up; rate rises stretch the tenure instead.':' EMI resets whenever the rate changes.'}`
+    : `Loan rate moves the way SBI's rate moved, anchored so ${LAST_YEAR} equals your ${q.r}%. So 1996 runs at ${hist[0]}%, 2021 at ${hist[25]}%. ${q.mode==='cap'?' EMI never goes up; rate rises stretch the tenure instead.':' EMI resets whenever the rate changes.'}`;
+  const si=NIFTY_YEARS.indexOf(start), Ay=cur.AA.yr, By=cur.BB.yr, div2=div;
+  $('mTblSub').textContent=`Market sequence starting ${start}.${div?' Nifty returns include about 1.3% a year of dividends.':' Nifty returns are price only, without dividends.'} The SIP stops when the prepaid loan is paid off; what's already invested keeps growing to the end. Values are at year end, before tax. Amber columns are the prepay side, blue the invest side. When the invest side's EMI is higher, the prepay side pays its own lower EMI and the gap is added to Prepaid (hover to see the split).${q.draw?' EMI is paid from each side\'s own investments; whatever they cannot cover is paid from your pocket (red, with a minus sign, per year; totals in the last row) and counted against that side at the end. EMI withdrawals are taxed on their gains share in the year you sell; hover a withdrawal to see the tax.':''}`;
+  const avg30=(Math.pow(rot(si).reduce((x,v)=>x*(1+v/100),1),1/30)-1)*100;
+  const showPI = cur.AA.contrib>0.5 || cur.AA.yr.some(x=>x.corpus>0.5);
+  $('mHead').innerHTML='<tr><th>Loan yr</th><th>Market yr</th><th>Nifty return</th><th>Loan rate</th><th class="sp">Prepay: EMI</th><th class="sp">Prepaid</th><th class="sp">Prepay: owed</th>'+(showPI?'<th class="sp">Prepay: invested</th>':'')+'<th class="si">Invest: EMI</th><th class="si">SIP put in</th><th class="si">Invest: owed</th><th class="si">Invest: SIP value</th><th>Ahead</th></tr>';
+  const pin=v=>(q.draw&&v>0.5)?` <span class="neg tipped" tabindex="0" data-tip="Paid from pocket">(${short(v)})</span>`:'';
+  const negAmt=(v,cls,tip)=>`<span class="${cls} tipped" tabindex="0" data-tip="${tip}">−${short(v)}</span>`;
+  const pk=v=>q.draw?`<td class="${v>0.5?'neg':''}">${v>0.5?short(v):'–'}</td>`:'';
+  const emiCell=(a,b)=>{
+    const pa=a.emiPaid||0, pb=b.emiPaid||0;
+    if(!pa && !pb) return '<td>–</td>';
+    if(!pa) return `<td><span class="onlyinv" tabindex="0" data-tip="Prepay loan is paid off. This EMI is only paid on the invest side.">${rs(pb)}</span></td>`;
+    if(Math.abs(pa-pb)<1) return `<td>${rs(pb)}</td>`;
+    return `<td><span class="tipped" tabindex="0" data-tip="Prepay side / invest side">${rs(pa)} / ${rs(pb)}</span></td>`;
+  };
+  $('mTbl').innerHTML=By.map((b,i)=>{ const a=Ay[i], my=NIFTY_YEARS[yIdx(si,i)]+(NIFTY_YEARS[yIdx(si,i)]===PARTIAL.year?' (YTD)':''), nr=base[yIdx(si,i)];
+    const eff=(Math.pow(1+b.rate/1200,12)-1)*100, mk=nr>eff;
+    const ahead=(a.corpus-a.out-a.pocket)-(b.corpus-b.out-b.pocket);
+    return `<tr><td>${i+1}</td><td>${my}</td><td class="${nr>=0?'pos':'neg'}">${nr>=0?'+':''}${nr.toFixed(1)}%</td><td class="${i&&b.rate>By[i-1].rate+1e-9?'neg':i&&b.rate<By[i-1].rate-1e-9?'pos':''}">${b.rate.toFixed(2)}%</td><td class="sp">${a.emiPaid?rs(a.emiPaid):'–'}</td><td class="sp">${(()=>{ const pkt=a.pocket-(i?Ay[i-1].pocket:0); const main=a.pre>0.5?(a.diff>0.5?`<span class="tipped" tabindex="0" data-tip="${short(a.pre-a.diff)} planned prepayment + ${short(a.diff)} EMI gap (the invest side's higher EMI minus this side's EMI)">${short(a.pre)}</span>`:short(a.pre)):''; const wd=a.wd>0.5?negAmt(a.wd,'wdout',`Taken out of the prepay side's investments to pay EMI. Includes ${short(a.tax)} tax on gains.`):''; const neg=(q.draw&&pkt>0.5)?negAmt(pkt,'neg','Paid from pocket'):''; return [main,wd,neg].filter(Boolean).join(' ')||'–'; })()}</td><td>${a.out>0.5?short(a.out):'Paid off'}</td>${showPI?`<td>${a.corpus>0.5?short(a.corpus):'–'}</td>`:''}<td class="si">${b.emiPaid?rs(b.emiPaid):'–'}</td><td class="si">${(()=>{ const main=b.amt?short(b.amt):''; const neg=b.wd>0.5?negAmt(b.wd,'wdout',`Taken out of the SIP corpus to pay EMI. Includes ${short(b.tax)} tax on gains.`):''; return (main&&neg)?main+' '+neg:(main||neg||'–'); })()}</td><td>${b.out>0.5?short(b.out):'Paid off'}</td><td>${b.corpus>0.5?short(b.corpus):'–'}${pin(b.pocket-(i?By[i-1].pocket:0))}</td><td class="${ahead>=0?'pos':'neg'}">${ahead>=0?'Prepay ':'SIP '}${short(Math.abs(ahead))}</td></tr>`; }).join('') + (()=>{
+    const A=cur.AA, B=cur.BB, yrs=By.length;
+    const g=[]; for(let i=0;i<yrs;i++) g.push(1+base[yIdx(si,i)]/100);
+    const cagr=(Math.pow(g.reduce((x,y)=>x*y,1),1/yrs)-1)*100;
+    const loanB=irrA(q.P,B.loanCF.map(x=>-x),0), loanA=irrA(q.P,A.loanCF.map(x=>-x),0);
+    const xB=irrA(0,B.invCF.map(x=>-x),B.corpusPre), xA=irrA(0,A.invCF.map(x=>-x),A.corpusPre);
+    const pc=v=>(v==null||v<-20)?'–':v.toFixed(2)+'%';
+    const fin=(A.corpusPre-A.pocket)-(B.corpusPre-B.pocket);
+    return `<tr class="key" style="border-top:2px solid var(--line)"><td>Overall</td><td></td><td>CAGR ${pc(cagr)}</td><td>Cost ${pc(loanB)}</td><td>–</td><td class="sp">${short(A.prepaid)}${A.wdTot>0.5?' '+negAmt(A.wdTot,'wdout',`Taken out of the prepay side's investments to pay EMI. Includes ${short(A.taxPaid)} tax on gains.`):''}${(q.draw&&A.pocket>0.5)?' '+negAmt(A.pocket,'neg','Paid from pocket'):''}</td><td>Cost ${pc(loanA)}</td>${showPI?`<td>XIRR ${pc(xA)}</td>`:''}<td>–</td><td class="si">${short(B.amtTot)}${B.wdTot>0.5?' '+negAmt(B.wdTot,'wdout',`Taken out of the SIP corpus to pay EMI. Includes ${short(B.taxPaid)} tax on gains.`):''}</td><td>Cost ${pc(loanB)}</td><td>XIRR ${pc(xB)}${pin(B.pocket)}</td><td class="${fin>=0?'pos':'neg'}">${fin>=0?'Prepay ':'SIP '}${short(Math.abs(fin))}</td></tr>`; })();
+  $('mTblNote').textContent='Overall row: Nifty CAGR is the market\'s yearly growth over these years. Loan cost is the effective yearly interest you actually paid (IRR of the loan money received and every EMI and prepayment). XIRR is the yearly return on each side\'s actual investments, given when each rupee went in. All before tax.';
+  const yrs=Math.ceil(q.N/12), used=rot(NIFTY_YEARS.indexOf(start)), g=[];
+  for(let i=0;i<yrs;i++) g.push(1+used[i%used.length]/100);
+  const cagr=(Math.pow(g.reduce((a,b)=>a*b,1),1/yrs)-1)*100;
+  $('mA').textContent=short(cur.AA.corpus); $('mA').style.color='var(--amber)'; $('mAs').textContent= q.draw ? `after tax, minus ${short(cur.AA.pocket)} paid from pocket` : 'after tax';
+  $('mB').textContent=short(cur.BB.corpus); $('mB').style.color='var(--blue)'; $('mBs').textContent=(q.draw?`after tax, minus ${short(cur.BB.pocket)} paid from pocket · `:'')+`market CAGR over ${yrs} yrs: ${cagr.toFixed(1)}%`;
+  const w=cur.d>=0; $('mW').textContent=w?'Prepay':'Invest'; $('mW').style.color=w?'var(--amber)':'var(--blue)';
+  $('mWs').textContent=`by ${short(Math.abs(cur.d))}`;
+  const inv=res.filter(r=>r.d<0).length, ds=res.map(r=>r.d).sort((a,b)=>a-b);
+  const worst=res.reduce((a,b)=>b.d>a.d?b:a), best=res.reduce((a,b)=>b.d<a.d?b:a);
+  $('mSummary').innerHTML=`Across all ${NY} start years, investing wins <strong>${inv} of ${NY}</strong> times. ` +
+    (inv? `Its best case is starting in ${best.y}, ahead by ${short(-best.d)}. ` : '') +
+    (inv<NY? `Prepaying's best case is starting in ${worst.y}, ahead by ${short(worst.d)}. ` : '') +
+    (()=>{ const mid=NY%2?ds[(NY-1)/2]:(ds[NY/2-1]+ds[NY/2])/2; return `The middle outcome is ${mid>=0?'prepay':'invest'} ahead by ${short(Math.abs(mid))}.`; })();
+  if(typeof Chart==='undefined'||$('p-pp').hidden) return;
+  const cols=res.map(r=>r.d>=0?css('--amber'):css('--blue'));
+  const data={labels:res.map(r=>r.y),datasets:[{label:'Prepay minus invest',data:res.map(r=>r.d),backgroundColor:cols,borderWidth:0}]};
+  if(mChart){ mChart.data=data; mChart.update('none'); return; }
+  mChart=new Chart($('mChart'),{type:'bar',data,options:{responsive:true,maintainAspectRatio:false,animation:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>'Start in '+c[0].label,label:c=>(c.parsed.y>=0?'Prepay ahead by ':'Invest ahead by ')+short(Math.abs(c.parsed.y))}}},
+    scales:{x:{grid:{display:false},ticks:{color:css('--muted'),autoSkip:true,maxTicksLimit:15}},y:{grid:{color:css('--line')},ticks:{color:css('--muted'),callback:v=>short(v)}}}}});
+}
+$('mStart').addEventListener('change',()=>renderPP());
+$('mDiv').addEventListener('change',()=>renderPP());
+$('mRate').addEventListener('change',()=>renderPP());
+let qChart, qAmtTouched=false, qRetTouched=false;
+function renderPP(){
+  const n=id=>Math.max(0,parseFloat($(id).value)||0);
+  const q={P:n('qP'),N:Math.max(1,Math.round(n('qYrs')*12)),r:n('qR'),freq:$('qFreq').value,start:Math.max(1,Math.round(n('qStart'))),mode:$('qMode').value,tax:Math.min(100,n('qTax'))};
+  q.stopM=Math.min(q.N,Math.max(1,Math.round(n('qStop')*12))||q.N);
+  q.draw=$('qDraw').checked;
+  $('qStopHint').dataset.tip = q.draw ? `After year ${q.stopM/12}, each side pays its EMI out of its own investments instead of from income. Each withdrawal is taxed on its gains share that year, so a little extra is sold to cover the tax. If they run out, the rest comes from your pocket and is subtracted from that side at the end.` : `Both sides stop adding money after this year. What's invested stays invested to the end of the tenure.`;
+  const E0=emi(q.P,q.r,q.N);
+  if(!qAmtTouched) $('qAmt').value=Math.ceil(E0);
+  q.amt=n('qAmt');
+  document.querySelectorAll('[data-qfor]').forEach(h=>h.textContent=short(n(h.dataset.qfor)));
+  $('qEmiHint').textContent='EMI '+rs(E0);
+  q.amtEmi=!qAmtTouched;
+  $('qModeHint').style.display = q.mode==='cap' ? '' : 'none';
+  $('qModeHint').dataset.tip = q.mode==='cap' ? 'Prepayments shorten the loan. When the rate rises, the EMI stays where it is and the loan runs longer (up to 40 years in total; past that, or if the EMI no longer covers the interest, the EMI has to rise). When the rate falls, the EMI drops, and it does not go back up when rates rise again.' : '';
+  $('qAmtInfo').dataset.tip = q.amtEmi ? 'Set to 1 EMI. It follows the EMI each time, including when the rate changes it. Type your own amount to fix it.' : 'A fixed amount you typed. Use 1 EMI to make it follow the EMI again. The minimum is one EMI.';
+  $('qAmtHint').style.display = q.amtEmi ? 'none' : '';
+  if(q.amtEmi) $('qAmtHint').innerHTML='';
+  else if(q.amt<E0){ $('qAmtHint').innerHTML=`<span class="warn">Minimum is one EMI (${rs(E0)}). Using that.</span> <button type="button" class="linkbtn" id="qAmtReset">Use 1 EMI</button>`; q.amt=E0; }
+  else $('qAmtHint').innerHTML=`${(q.amt/E0).toFixed(1)}× your EMI, fixed. <button type="button" class="linkbtn" id="qAmtReset">Use 1 EMI</button>`;
+  const rb=$('qAmtReset'); if(rb) rb.onclick=()=>{ qAmtTouched=false; renderPP(); };
+  if(q.start>q.N) q.start=q.N;
+  const ret=n('qRet');
+  const {A,B}=ppPair(q,ret);
+  const diff=A.corpus-B.corpus, saved=B.totI-A.totI;
+  // break-even return
+  let lo=0,hi=40; for(let i=0;i<50;i++){ const mid=(lo+hi)/2; {const pr=ppPair(q,mid); (pr.A.corpus>pr.B.corpus)?lo=mid:hi=mid;} }
+  const be=(lo+hi)/2;
+  $('qSaved').textContent=short(saved);
+  $('qSavedS').textContent= q.mode!=='emi' ? `loan closes ${dur(q.N-A.closed)} sooner` : `EMI drops to ${rs(A.endE)} by the end`;
+  $('qCorp').innerHTML=`<span style="color:var(--amber)">${short(A.corpus)}</span> <span style="font-size:.6em;color:var(--muted);font-weight:500">vs</span> <span style="color:var(--blue)">${short(B.corpus)}</span>`;
+  $('qCorpS').textContent= q.draw ? `prepay vs invest, after tax, minus money paid from pocket (${short(A.pocket)} vs ${short(B.pocket)})` : 'prepay vs invest, after tax';
+  const win=diff>=0?'Prepay':'Invest';
+  $('qWinH').textContent='Better option';
+  $('qWin').textContent=Math.abs(diff)<1000?'About even':win;
+  $('qWin').style.color= Math.abs(diff)<1000?'var(--ink)':diff>=0?'var(--amber)':'var(--blue)';
+  $('qWinS').textContent=Math.abs(diff)<1000?'less than ₹1,000 apart':`by ${short(Math.abs(diff))} at the end of ${dur(q.N)}`;
+  const v=$('qVerdict'); v.classList.remove('bad'); const vc=Math.abs(diff)<1000?'var(--line)':diff>=0?'var(--amber)':'var(--blue)'; v.style.borderLeftColor=vc; v.style.setProperty('--vc',vc);
+  $('qvMain').innerHTML = Math.abs(diff)<1000 ? `At ${ret}% the two come out level, which is what you'd expect when the return equals the loan rate.`
+    : diff>0 ? `Prepaying leaves you <strong>${short(diff)}</strong> better off. A guaranteed ${q.r}% saving beats an expected ${ret}%${q.tax?` taxed at ${q.tax}%`:''}.`
+    : `Investing leaves you <strong>${short(-diff)}</strong> better off, if you actually earn ${ret}% a year for ${dur(q.N)}.`;
+  $('qvSub').textContent=`Break-even return: ${be.toFixed(2)}%${q.tax?' before tax':''}. Investing only wins above that.`;
+  // Difference cells: amber when the row favours prepaying, blue when it favours investing
+  const d=(a,b,goodLow)=>{const x=b-a; return `<td class="${Math.abs(x)<1?'':(goodLow?x<0:x>0)?'sp':'si'}">${short(Math.abs(x))}</td>`;};
+  // Side by side: both sides spend the same each month, so the rows show where that money went
+  const freed=Math.max(0,A.contrib), tip=(t)=>` <span class="info" tabindex="0" data-tip="${t}">ⓘ</span>`;
+  const same=(x,y)=>Math.abs(x-y)<1;
+  $('qBody').innerHTML=`
+    <tr><td>Total interest on loan</td><td>${short(A.totI)}</td><td>${short(B.totI)}</td>${d(A.totI,B.totI,false)}</tr>
+    <tr><td>Loan closes after</td><td>${dur(A.closed)}</td><td>${dur(B.closed)}</td><td class="${A.closed<B.closed?'sp':A.closed>B.closed?'si':''}">${A.closed===B.closed?'same':dur(Math.abs(B.closed-A.closed))+' sooner'}</td></tr>
+    <tr><td>Spare money: prepaid / SIP put in${tip('The same spare money on both sides: paid into the loan on the prepay side, put into the SIP on the invest side. On the prepay side it also includes any EMI gap added to prepayments.')}</td><td>${short(A.prepaid)}</td><td>${short(B.amtTot)}</td><td class="muted">${same(A.prepaid,B.amtTot)?'–':short(Math.abs(A.prepaid-B.amtTot))}</td></tr>`
+    +(freed>0.5?`
+    <tr><td>EMI invested after loan closed${tip('Once the prepay loan is paid off, the EMI it no longer pays is invested each month. The invest side is still paying that EMI, so both sides spend the same.')}</td><td>${short(freed)}</td><td>–</td><td class="muted">–</td></tr>`:'')
+    +((A.wdTot>0.5||B.wdTot>0.5)?`
+    <tr><td>Taken out of investments to pay EMI${tip('After the stop year, EMIs come out of each side\'s investments first. Includes tax on the gains sold.')}</td><td class="pos">${A.wdTot>0.5?short(A.wdTot):'–'}</td><td class="pos">${B.wdTot>0.5?short(B.wdTot):'–'}</td><td class="muted">–</td></tr>`:'')
+    +`
+    <tr${q.draw?'':' class="key"'}><td>Investments at end (after tax)</td><td>${short(A.invEnd)}</td><td>${short(B.invEnd)}</td>${q.draw?`<td class="muted">${same(A.invEnd,B.invEnd)?'–':short(Math.abs(A.invEnd-B.invEnd))}</td>`:d(B.corpus,A.corpus,false)}</tr>`
+    +(q.draw?`
+    <tr><td>EMI paid from pocket</td><td class="neg">${A.pocket>0.5?short(A.pocket):'–'}</td><td class="neg">${B.pocket>0.5?short(B.pocket):'–'}</td>${same(A.pocket,B.pocket)?'<td class="muted">–</td>':d(A.pocket,B.pocket,false)}</tr>
+    <tr class="key"><td>Net: investments minus pocket money</td><td>${short(A.corpus)}</td><td>${short(B.corpus)}</td>${d(B.corpus,A.corpus,false)}</tr>`:'');
+  renderMarket(q);
+  const NL=A.nw.length, yrs=Math.ceil(NL/12), labels=['Start'], a=[-q.P], b=[-q.P];
+  for(let y=1;y<=yrs;y++){ labels.push('Y'+y); const i=Math.min(y*12,NL)-1; a.push(A.nw[i]); b.push(B.nw[i]); }
+  const series=[{label:'Prepay',color:css('--amber'),data:a},{label:'Invest',color:css('--blue'),data:b}];
+  $('qLegend').innerHTML=series.map(s=>`<span><i style="background:${s.color}"></i>${s.label}</span>`).join('');
+  if(typeof Chart==='undefined'||$('p-pp').hidden) return;
+  const ds=series.map(s=>({label:s.label,data:s.data,borderColor:s.color,backgroundColor:s.color,borderWidth:2,pointRadius:0,tension:.25}));
+  if(qChart){ qChart.data.labels=labels; qChart.data.datasets=ds; qChart.update('none'); return; }
+  qChart=new Chart($('qChart'),{type:'line',data:{labels,datasets:ds},options:{
+    responsive:true,maintainAspectRatio:false,animation:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+short(c.parsed.y)}}},
+    scales:{x:{grid:{display:false},ticks:{color:css('--muted'),maxTicksLimit:12}},y:{grid:{color:css('--line')},ticks:{color:css('--muted'),callback:v=>short(v)}}}}});
+}
+$('qFreq').addEventListener('change',()=>{ $('qStart').value={once:12,month:1,quarter:3,half:6,year:12}[$('qFreq').value]; });
+$('qAmt').addEventListener('input',()=>qAmtTouched=true);
+$('qRet').addEventListener('input',()=>qRetTouched=true);
+$('qAmt').addEventListener('change',renderPP);
+$('ppAside').addEventListener('input',e=>{ if(e.target.id!=='qAmt') renderPP(); });
+$('qAmt').addEventListener('input',()=>{ clearTimeout(window._qt); window._qt=setTimeout(renderPP,500); });
+$('ppAside').addEventListener('change',renderPP);
+
+// ---------- Tooltips (work on hover, tap and keyboard focus) ----------
+(function(){
+  const tip=document.createElement('div'); tip.id='tip'; tip.setAttribute('role','tooltip'); document.body.appendChild(tip);
+  let cur=null;
+  const show=el=>{ cur=el; tip.textContent=el.dataset.tip; tip.classList.add('on');
+    const r=el.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight;
+    let x=Math.min(Math.max(8,r.left+r.width/2-w/2),window.innerWidth-w-8), y=r.top-h-8; if(y<8) y=r.bottom+8;
+    tip.style.left=x+'px'; tip.style.top=y+'px'; };
+  const hide=()=>{ cur=null; tip.classList.remove('on'); };
+  document.addEventListener('mouseover',e=>{ const el=e.target.closest('[data-tip]'); if(el) show(el); });
+  document.addEventListener('mouseout',e=>{ const el=e.target.closest('[data-tip]'); if(el && !el.contains(e.relatedTarget) && pinned!==el) hide(); });
+  document.addEventListener('focusin',e=>{ const el=e.target.closest('[data-tip]'); if(el) show(el); });
+  let pinned=null;
+  document.addEventListener('focusout',e=>{ const el=e.target.closest('[data-tip]'); if(el && pinned!==el) hide(); });
+  document.addEventListener('click',e=>{ const el=e.target.closest('[data-tip]');
+    if(el){ if(el.closest('label')) e.preventDefault(); if(pinned===el){ pinned=null; hide(); } else { pinned=el; show(el); } }
+    else { pinned=null; hide(); } });
+  window.addEventListener('scroll',hide,true);
+})();
+
+// ---------- Tabs ----------
+const tabs=[['t-od','p-od'],['t-bt','p-bt'],['t-pp','p-pp']];
+function showTab(id){
+  tabs.forEach(([t,p])=>{ const on=t===id; $(t).setAttribute('aria-selected',on); $(t).tabIndex=on?0:-1; $(p).hidden=!on; });
+  if(id==='t-bt'){ renderBT(); bChart&&bChart.resize(); } else if(id==='t-pp'){ renderPP(); qChart&&qChart.resize(); mChart&&mChart.resize(); } else { chart&&chart.resize(); }
+  try{ localStorage.setItem('hlcalc-tab',id); }catch(e){}
+}
+tabs.forEach(([t],i)=>{ $(t).onclick=()=>showTab(t);
+  $(t).onkeydown=e=>{ if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const j=(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length; showTab(tabs[j][0]); $(tabs[j][0]).focus(); } }; });
+try{ const saved=localStorage.getItem('hlcalc-tab'); if(saved && $(saved)) showTab(saved); }catch(e){}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{ if(chart){chart.destroy();chart=null;} if(bChart){bChart.destroy();bChart=null;} if(qChart){qChart.destroy();qChart=null;} if(mChart){mChart.destroy();mChart=null;} render(); if(!$('p-bt').hidden) renderBT(); if(!$('p-pp').hidden) renderPP(); });
+
+// ---------- Prefill from URL: ?preset=<name>, ?<field id>=<value>, wd=<amount>@<month>,..., tab=od|bt|pp ----------
+const PRESETS={
+  mine:{P:'31200000',bP:'31200000',qP:'31200000',lump:'4000000',dep:'600000',mOut:'200000',wd:'1000000@3,1000000@6'}
+};
+(function(){
+  const qs=new URLSearchParams(location.search);
+  // Preset values first, explicit URL parameters override them
+  const params=new Map(Object.entries(PRESETS[qs.get('preset')]||{}));
+  qs.forEach((v,k)=>{ if(k!=='preset') params.set(k,v); });
+  params.forEach((v,k)=>{
+    const el=$(k);
+    if(!el || !/^(INPUT|SELECT)$/.test(el.tagName) || el.closest('.wdrow')) return;
+    if(el.type==='checkbox') el.checked=/^(1|true|yes|on)$/i.test(v);
+    else if(el.tagName==='SELECT'){ if([...el.options].some(o=>o.value===v)) el.value=v; }
+    else el.value=v;
+  });
+  if(params.has('qAmt')) qAmtTouched=true;
+  if(params.has('qRet')) qRetTouched=true;
+  if(params.has('bInv')) bInvTouched=true;
+  if(params.has('bSip')) bSipTouched=true;
+  if(params.has('wd')){
+    $('wdList').innerHTML='';
+    params.get('wd').split(',').filter(Boolean).forEach(x=>{ const [a,m]=x.split('@'); addWd(Math.max(0,+a||0),Math.max(1,Math.round(+m||1))); });
+  }
+  const tab={od:'t-od',bt:'t-bt',pp:'t-pp'}[params.get('tab')];
+  if(tab) showTab(tab);
+  else if(params.size){ if(!$('p-bt').hidden) renderBT(); if(!$('p-pp').hidden) renderPP(); }
+})();
+render();
+</script>
+</body>
+</html>
