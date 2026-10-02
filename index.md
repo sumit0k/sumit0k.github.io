@@ -1,17 +1,19 @@
-# Sumit's Resume
----
-> Engineering Leader with expertise in Data Strategy, 1:1 Mentor & Consultant. My focus has been on nurturing a data-driven culture and refining product strategies to meet visionary goals, spearheading infrastructure migrations and system optimizations that achieved substantial cost savings and reliability improvements.
+> I build data-driven engineering cultures and the teams behind them, from 0-to-1 products to platforms serving millions of users. Currently leading engineering at Headout, and mentoring engineers and managers 1:1 on leadership and data strategy.
 
 ### What makes me qualified:
 
 - Led engineering teams at Headout, Apollo.io, HackerRank and Postman, delivering major product initiatives with cross-team coordination
 - Grew a **10 members remote data engineering team from 5** office based people, and scaled it to handle **10s of TeraBytes** of data and integrate **100+ data sources**
 - Built "Data transformation platform" and "Data integration platform" with the aim of data democratisation, improving the experience for **17+ million users** on the Postman API Platform and Apollo.io Data products
-- Introduced systematic processes that **reduced ticket resolution time by 20x**, and led infrastructure migrations with around **75% cost savings**
+- Improved company **DevEx score from -24 to 53** at Headout, and **cut bounce rate by 50%+** for Apollo.io customers
 
-## Contact: [sumit0krk@gmail.com](mailto:sumit0krk@gmail.com)
+# CONTACT
+---
 
-**Blog:** [databirdie.substack.com](https://databirdie.substack.com/) | **Mentoring:** [topmate.io/sumit0k](https://topmate.io/sumit0k), [mentoring-club.com](https://www.mentoring-club.com/profiles/sumit-kumar) | **LinkedIn:** [sumit0k](https://www.linkedin.com/in/sumit0k)
+| **Email**<br>[sumit0krk@gmail.com](mailto:sumit0krk@gmail.com) | | |
+|---|---|---|
+| **Blog**<br>[databirdie.substack.com](https://databirdie.substack.com/) | **Mentoring**<br>[topmate.io/sumit0k](https://topmate.io/sumit0k), [mentoring-club.com](https://www.mentoring-club.com/profiles/sumit-kumar) | **LinkedIn**<br>[linkedin.com/in/sumit0k](https://www.linkedin.com/in/sumit0k) |
+{: .contact}
 
 # TECHNICAL SKILLS
 ---

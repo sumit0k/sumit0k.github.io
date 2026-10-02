@@ -1,0 +1,158 @@
+:root {
+    --bg: #0b0f14;
+    --surface: #121821;
+    --border: #1f2833;
+    --text: #d6dde6;
+    --muted: #8a96a6;
+    --heading: #f3f6f9;
+    --accent: #4ade80;
+    --accent-soft: rgba(74, 222, 128, 0.12);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 var(--sans);
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Header & footer */
+header.container { padding: 64px 20px 32px; }
+header .title { color: var(--heading); text-decoration: none; }
+header h1 {
+    margin: 0;
+    font-size: clamp(2.2rem, 6vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+.tagline { margin: 12px 0 24px; color: var(--muted); font-size: 1.1rem; max-width: 60ch; }
+
+.links { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.875rem;
+    transition: border-color 0.15s, color 0.15s;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+.btn-primary:hover { color: var(--bg); filter: brightness(1.1); }
+
+footer.container { padding: 40px 20px 56px; border-top: 1px solid var(--border); margin-top: 56px; }
+footer p { color: var(--muted); font-size: 0.85rem; margin: 20px 0 0; }
+
+/* Content */
+main h1 {
+    margin: 56px 0 16px;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+main h1 + hr { display: none; }
+main h1::after {
+    content: "";
+    display: block;
+    height: 1px;
+    margin-top: 10px;
+    background: var(--border);
+}
+
+main h2, main h3 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    color: var(--heading);
+}
+main h2 { margin: 32px 0 4px; font-size: 1.3rem; font-weight: 650; letter-spacing: -0.01em; }
+main h3 { margin: 18px 0 6px; font-size: 0.95rem; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+
+/* Dates written as _`...`_ in markdown */
+main h2 em, main h3 em { font-style: normal; margin-left: auto; }
+main code {
+    font: 0.8rem var(--mono);
+    color: var(--muted);
+    background: none;
+    padding: 0;
+}
+
+main p { margin: 8px 0; }
+strong { color: var(--heading); font-weight: 600; }
+
+main ul { margin: 6px 0 12px; padding-left: 20px; }
+main li { margin: 4px 0; }
+main li::marker { color: var(--accent); }
+
+blockquote {
+    margin: 0 0 24px;
+    padding: 16px 20px;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    background: var(--surface);
+    color: var(--text);
+}
+blockquote p { margin: 0; }
+
+/* Contact table: email in the header row, links in one row below */
+table.contact { table-layout: fixed; border: 1px solid var(--border); border-radius: 10px; border-collapse: separate; border-spacing: 0; overflow: hidden; }
+table.contact thead { display: table-header-group; }
+table.contact th {
+    padding: 16px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+    overflow: visible;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+table.contact td { width: auto; padding: 14px 20px; border-bottom: 0; }
+table.contact td + td { border-left: 1px solid var(--border); }
+table.contact th strong, table.contact td strong {
+    display: inline-block;
+    margin-bottom: 2px;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Skills table */
+table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+thead { display: none; }
+td { padding: 10px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+td:first-child { width: 170px; padding-right: 16px; }
+td:first-child strong { color: var(--accent); font-size: 0.75rem; letter-spacing: 0.1em; }
+
+@media (max-width: 600px) {
+    table.contact tr { padding: 0; border: 0; }
+    table.contact th { display: block; }
+    table.contact th + th { display: none; }
+    table.contact td { padding: 14px 20px; }
+    table.contact td + td { border-left: 0; border-top: 1px solid var(--border); }
+    header.container { padding-top: 40px; }
+    td { display: block; width: auto !important; padding: 2px 0; border: 0; }
+    tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--border); }
+}

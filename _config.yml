@@ -1,7 +1,5 @@
-theme: jekyll-theme-hacker
-remote_theme: pages-themes/hacker@v0.2.0
 plugins:
-  - jekyll-remote-theme
+  - jekyll-seo-tag
 title: Sumit Kumar
 description: Engineering teams leader, built systems handling TBs of distributed data, 20x faster ticket resolution, 75% cost savings, 6x faster queries
 links:
@@ -9,7 +7,7 @@ links:
   linkedin: sumit0k
   github: sumit0k
   stackoverflow: 4453633/sumit
-  medium: sumit0k
+  blog: https://databirdie.substack.com/
 twitter:
   username: sumit0k
   card: summary
